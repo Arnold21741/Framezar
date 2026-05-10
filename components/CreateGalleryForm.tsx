@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import GalleryCoverPreview from '@/components/GalleryCoverPreview';
+import { coverDesigns, type CoverDesignId } from '@/lib/cover-designs';
 
 const sampleHero = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80';
 const sampleImages = [
@@ -19,6 +21,7 @@ export default function CreateGalleryForm() {
   const [passwordProtected, setPasswordProtected] = useState(true);
   const [heroImage, setHeroImage] = useState(sampleHero);
   const [galleryImages, setGalleryImages] = useState(sampleImages);
+  const [selectedCoverDesign, setSelectedCoverDesign] = useState<CoverDesignId>('editorial-banner');
   const objectUrlsRef = useRef<string[]>([]);
 
   const heroPreview = useMemo(() => heroImage, [heroImage]);
@@ -97,28 +100,119 @@ export default function CreateGalleryForm() {
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-[0.9fr_1.1fr]">
-          <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-slate-100">
-            <img src={heroPreview} alt="Hero preview" className="h-96 w-full object-cover" />
+        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-slate-100 shadow-sm">
+            <div className="relative aspect-[16/10] w-full">
+              <img src={heroPreview} alt="Hero preview" className="h-full w-full object-cover" />
+            </div>
           </div>
           <div className="rounded-[32px] border border-slate-200 bg-slate-50 p-6">
             <p className="text-sm uppercase tracking-[0.35em] text-brand">Preview</p>
             <h2 className="mt-4 text-xl font-semibold text-slate-950">Hero cover selection</h2>
             <p className="mt-3 text-slate-600">This image will be used as the album cover preview whenever you share the client link.</p>
-            <div className="mt-6 grid gap-3">
+            <div className="mt-6 grid grid-cols-2 gap-3">
               {galleryImages.slice(0, 4).map((src, index) => (
-                <img key={index} src={src} alt={`Gallery preview ${index + 1}`} className="h-24 w-full rounded-3xl object-cover" />
+                <div key={index} className="overflow-hidden rounded-3xl border border-white bg-white shadow-sm">
+                  <div className="relative aspect-[4/3] w-full">
+                    <img src={src} alt={`Gallery preview ${index + 1}`} className="h-full w-full object-cover" />
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         </div>
 
+        <div className="rounded-[32px] border border-slate-200 bg-slate-50 p-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.35em] text-brand">Cover design</p>
+              <h2 className="mt-3 text-2xl font-semibold text-slate-950">Choose how clients first see the gallery</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                These options are visual previews for now. The chosen style will be persisted when account storage is added.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {coverDesigns.map((design) => {
+              const selected = selectedCoverDesign === design.id;
+              return (
+                <button
+                  key={design.id}
+                  type="button"
+                  onClick={() => setSelectedCoverDesign(design.id)}
+                  className={`rounded-[28px] border bg-white p-3 text-left transition ${
+                    selected
+                      ? 'border-brand shadow-soft ring-2 ring-brand/20'
+                      : 'border-slate-200 hover:border-slate-300 hover:shadow-soft'
+                  }`}
+                >
+                  <GalleryCoverPreview
+                    design={design.id}
+                    title={title}
+                    clientName={clientName}
+                    eventDate={eventDate}
+                    passwordProtected={passwordProtected}
+                    size="thumb"
+                  />
+                  <div className="mt-4 px-1">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-semibold text-slate-950">{design.name}</p>
+                      {selected ? (
+                        <span className="rounded-full bg-brand px-3 py-1 text-xs font-semibold text-white">Selected</span>
+                      ) : null}
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{design.description}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-8">
+            <p className="mb-4 text-sm font-semibold text-slate-900">Selected cover preview</p>
+            <div className="grid gap-6 xl:grid-cols-[1fr_320px] xl:items-start">
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Desktop</p>
+                <GalleryCoverPreview
+                  design={selectedCoverDesign}
+                  title={title}
+                  clientName={clientName}
+                  eventDate={eventDate}
+                  passwordProtected={passwordProtected}
+                  size="large"
+                />
+              </div>
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Mobile</p>
+                <div className="mx-auto max-w-[330px] rounded-[48px] border border-slate-800 bg-slate-950 p-3 shadow-[0_28px_80px_rgba(15,23,42,0.26)]">
+                  <div className="relative rounded-[38px] border border-white/10 bg-slate-900 p-2">
+                    <div className="absolute left-1/2 top-3 z-10 h-5 w-24 -translate-x-1/2 rounded-full bg-slate-950 shadow-sm" />
+                    <div className="absolute right-[88px] top-[18px] z-20 h-2 w-2 rounded-full bg-slate-700" />
+                    <div className="overflow-hidden rounded-[32px] bg-white pt-5">
+                      <GalleryCoverPreview
+                        design={selectedCoverDesign}
+                        title={title}
+                        clientName={clientName}
+                        eventDate={eventDate}
+                        passwordProtected={passwordProtected}
+                        size="mobile"
+                      />
+                    </div>
+                    <div className="mx-auto mt-3 h-1 w-24 rounded-full bg-white/35" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="rounded-[32px] border border-slate-200 bg-slate-50 p-6 text-slate-700">
-          <p className="font-medium text-slate-950">Next steps</p>
+          <p className="font-medium text-slate-950">Gallery setup</p>
           <ul className="mt-4 space-y-2 text-sm leading-6">
-            <li>• After launch, this form will upload images directly to Cloudflare R2.</li>
-            <li>• The hero image will become the private gallery preview for the client link.</li>
-            <li>• Image ordering, download sizes, and watermark settings will be added in future iterations.</li>
+            <li>Choose the cover image clients see before opening the gallery.</li>
+            <li>Pick a cover design that matches the tone of the session.</li>
+            <li>Review the desktop and mobile previews before sharing the link.</li>
           </ul>
         </div>
 
