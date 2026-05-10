@@ -56,7 +56,7 @@ export default function Navbar() {
           <Link href="/account" className="dark-glass-button hidden rounded-full px-4 py-2 text-sm font-medium md:inline-flex">
             Log in
           </Link>
-          <Link href="/signup" className="dark-glass-button hidden rounded-full px-4 py-2 text-sm font-medium md:inline-flex">
+          <Link href="/early-access" className="dark-glass-button hidden rounded-full px-4 py-2 text-sm font-medium md:inline-flex">
             Get started
           </Link>
           <button
@@ -102,7 +102,7 @@ export default function Navbar() {
               Log in
             </Link>
             <Link
-              href="/signup"
+              href="/early-access"
               onClick={() => setMenuOpen(false)}
               className="dark-glass-button block rounded-full px-4 py-3 text-center text-sm font-medium"
             >

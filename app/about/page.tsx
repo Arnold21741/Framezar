@@ -62,8 +62,8 @@ export default function AboutPage() {
             <div className="rounded-[32px] border border-slate-200/70 bg-white/95 p-8 shadow-soft">
               <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Join us</p>
               <p className="mt-3 text-slate-600">Make your client galleries feel more premium from day one.</p>
-              <Link href="/signup" className="dark-glass-button mt-5 inline-flex w-full items-center justify-center rounded-full px-6 py-3 text-sm font-semibold">
-                Start your free trial
+              <Link href="/early-access" className="dark-glass-button mt-5 inline-flex w-full items-center justify-center rounded-full px-6 py-3 text-sm font-semibold">
+                Request early access
               </Link>
             </div>
           </aside>

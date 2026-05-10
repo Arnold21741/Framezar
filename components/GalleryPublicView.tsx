@@ -66,7 +66,7 @@ export default function GalleryPublicView({ gallery }: { gallery: DemoGallery })
                 </div>
                 <div className="space-y-3 pt-4">
                   <button type="button" className="dark-glass-button w-full rounded-full px-5 py-3 text-sm font-semibold">
-                    Download all (placeholder)
+                    Download collection
                   </button>
                   <button type="button" className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand hover:text-brand">
                     Save favorites

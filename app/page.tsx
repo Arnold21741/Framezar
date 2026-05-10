@@ -17,8 +17,8 @@ export default function HomePage() {
             Framezar is built for photographers who want private client galleries that feel like a premium photo album — not a file browser.
           </p>
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Link href="/signup" className="dark-glass-button inline-flex items-center justify-center rounded-full px-6 py-3 text-base font-semibold">
-              Sign up
+            <Link href="/early-access" className="dark-glass-button inline-flex items-center justify-center rounded-full px-6 py-3 text-base font-semibold">
+              Request early access
             </Link>
             <Link href="/pricing" className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-base font-semibold text-slate-950 transition hover:border-slate-300">
               View pricing
@@ -75,8 +75,8 @@ export default function HomePage() {
           </div>
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl font-semibold text-slate-950">Future-ready gallery tools</h3>
-              <p className="mt-3 text-slate-600">Prepare for Cloudflare R2 storage, password protection, expiring links, and watermark options.</p>
+              <h3 className="text-xl font-semibold text-slate-950">Private delivery controls</h3>
+              <p className="mt-3 text-slate-600">Plan clean gallery access with password options, expiring links, and watermark-ready previews.</p>
             </div>
             <div>
               <h3 className="text-xl font-semibold text-slate-950">No checkout needed</h3>
@@ -114,7 +114,7 @@ export default function HomePage() {
           id="pro"
           name="Pro"
           storage="15 GB"
-          description="15 GB client delivery priced $3 below CloudSpot Entry."
+          description="15 GB client delivery for launch-stage photography studios."
           label="Popular"
           highlight
           tone="dark"

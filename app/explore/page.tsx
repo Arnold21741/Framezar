@@ -142,9 +142,9 @@ export default function ExplorePage() {
               <p className="text-sm uppercase tracking-[0.35em] text-brand">Build a delivery card</p>
               <h2 className="mt-2 text-3xl font-semibold text-slate-950">Drag a hero image into the card</h2>
             </div>
-            <Link href="/signup" className="dark-glass-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold">
-              Create your gallery
-            </Link>
+              <Link href="/early-access" className="dark-glass-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold">
+                Create your gallery
+              </Link>
           </div>
 
           <DeliveryCard
@@ -163,8 +163,8 @@ export default function ExplorePage() {
               <p className="text-sm uppercase tracking-[0.35em] text-brand">Live gallery examples</p>
               <h2 className="mt-2 text-3xl font-semibold text-slate-950">See how client work appears in Framezar</h2>
             </div>
-            <Link href="/signup" className="dark-glass-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold">
-              Start your free trial
+            <Link href="/early-access" className="dark-glass-button inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold">
+              Request early access
             </Link>
           </div>
 

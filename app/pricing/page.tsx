@@ -79,11 +79,11 @@ export default function PricingPage() {
                 </li>
                 <li className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-brand rounded-full"></div>
-                  Future Cloudflare R2 storage integration
+                  Storage-ready gallery delivery workflow
                 </li>
                 <li className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-brand rounded-full"></div>
-                  Password protection and expiring links (coming soon)
+                  Password protection and expiring links planned for launch
                 </li>
               </ul>
             </div>
@@ -100,10 +100,10 @@ export default function PricingPage() {
 
         <div className="text-center space-y-6">
           <h2 className="text-3xl font-semibold text-slate-950">Ready to get started?</h2>
-          <p className="text-slate-600">Join thousands of photographers delivering their work beautifully.</p>
+          <p className="text-slate-600">Join the early group shaping Framezar before public launch.</p>
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <Link href="/signup" className="dark-glass-button inline-flex items-center justify-center rounded-full px-8 py-3 text-base font-semibold">
-              Start free trial
+            <Link href="/early-access" className="dark-glass-button inline-flex items-center justify-center rounded-full px-8 py-3 text-base font-semibold">
+              Request early access
             </Link>
           </div>
         </div>

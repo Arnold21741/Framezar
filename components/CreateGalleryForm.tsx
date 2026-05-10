@@ -123,7 +123,7 @@ export default function CreateGalleryForm() {
         </div>
 
         <button className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-3 text-base font-semibold text-white transition hover:bg-blue-600">
-          Save gallery (demo only)
+          Save gallery preview
         </button>
       </div>
     </div>

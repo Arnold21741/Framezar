@@ -39,11 +39,11 @@ export default function ManageGalleryPage({ params }: PageProps) {
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="card-surface p-8">
               <h2 className="text-xl font-semibold text-slate-950">Link settings</h2>
-              <p className="mt-3 text-slate-600">Prepare this gallery for private sharing, password access, or expiring links in a future release.</p>
+              <p className="mt-3 text-slate-600">Prepare this gallery for private sharing, password access, or expiring delivery links.</p>
               <div className="mt-6 space-y-3 text-sm text-slate-700">
-                <p>• Password protection placeholder</p>
-                <p>• Expiring client links placeholder</p>
-                <p>• Watermark preview placeholder</p>
+                <p>• Password protection settings</p>
+                <p>• Expiring client link settings</p>
+                <p>• Watermark preview settings</p>
               </div>
             </div>
             <div className="card-surface p-8">
