@@ -2,25 +2,36 @@ import Link from 'next/link';
 import { demoAccount } from '@/lib/demo-data';
 import DeliveryLinksManager from '@/components/DeliveryLinksManager';
 import PhotographerShowcaseSettings from '@/components/PhotographerShowcaseSettings';
+import LogoutButton from '@/components/LogoutButton';
+import { getCurrentUser } from '@/lib/auth-server';
 
-export default function AccountPage() {
+export default async function AccountPage() {
+  const user = await getCurrentUser();
+  const displayName = user?.user_metadata?.full_name ?? demoAccount.name;
+  const displayEmail = user?.email ?? demoAccount.email;
+
   return (
     <section className="page-container py-16 sm:py-20">
       <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="space-y-6">
           <div className="rounded-[32px] border border-slate-200/70 bg-white/95 p-10 shadow-soft">
             <p className="text-sm uppercase tracking-[0.35em] text-brand">Account overview</p>
-            <h1 className="mt-4 text-4xl font-semibold text-slate-950">{demoAccount.name}</h1>
-            <p className="mt-3 text-slate-600">{demoAccount.email}</p>
+            <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h1 className="text-4xl font-semibold text-slate-950">{displayName}</h1>
+                <p className="mt-3 text-slate-600">{displayEmail}</p>
+              </div>
+              {user ? <LogoutButton /> : null}
+            </div>
 
             <div className="mt-8 flex flex-col gap-6 rounded-[28px] bg-slate-50 p-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
                 <div className="h-20 w-20 overflow-hidden rounded-3xl bg-slate-100">
-                  <img src={demoAccount.photographerLogo} alt={`${demoAccount.name} logo`} className="h-full w-full object-cover" />
+                  <img src={demoAccount.photographerLogo} alt={`${displayName} logo`} className="h-full w-full object-cover" />
                 </div>
                 <div>
                   <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Studio logo</p>
-                  <p className="mt-2 text-xl font-semibold text-slate-950">{demoAccount.name}</p>
+                  <p className="mt-2 text-xl font-semibold text-slate-950">{displayName}</p>
                 </div>
               </div>
               <div>

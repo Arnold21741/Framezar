@@ -1,8 +1,14 @@
 import Link from 'next/link';
 import { galleries, demoAccount } from '@/lib/demo-data';
 import GalleryCard from '@/components/GalleryCard';
+import LogoutButton from '@/components/LogoutButton';
+import { getCurrentUser } from '@/lib/auth-server';
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const user = await getCurrentUser();
+  const displayName = user?.user_metadata?.full_name ?? demoAccount.name;
+  const displayEmail = user?.email ?? demoAccount.email;
+
   return (
     <section className="page-container py-16 sm:py-20">
       <div className="mb-12 space-y-8">
@@ -20,8 +26,9 @@ export default function DashboardPage() {
         <div className="grid gap-6 rounded-[32px] border border-slate-200/70 bg-white/95 p-8 shadow-soft sm:grid-cols-3">
           <div className="space-y-3">
             <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Account</p>
-            <p className="text-xl font-semibold text-slate-950">{demoAccount.name}</p>
-            <p className="text-sm text-slate-600">{demoAccount.email}</p>
+            <p className="text-xl font-semibold text-slate-950">{displayName}</p>
+            <p className="text-sm text-slate-600">{displayEmail}</p>
+            {user ? <div className="mt-4"><LogoutButton /></div> : null}
           </div>
           <div className="rounded-[28px] bg-slate-50 p-6">
             <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Storage</p>

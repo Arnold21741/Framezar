@@ -53,10 +53,10 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link href="/account" className="dark-glass-button hidden rounded-full px-4 py-2 text-sm font-medium md:inline-flex">
+          <Link href="/login" className="dark-glass-button hidden rounded-full px-4 py-2 text-sm font-medium md:inline-flex">
             Log in
           </Link>
-          <Link href="/early-access" className="dark-glass-button hidden rounded-full px-4 py-2 text-sm font-medium md:inline-flex">
+          <Link href="/signup" className="dark-glass-button hidden rounded-full px-4 py-2 text-sm font-medium md:inline-flex">
             Get started
           </Link>
           <button
@@ -95,14 +95,14 @@ export default function Navbar() {
               </Link>
             ))}
             <Link
-              href="/account"
+              href="/login"
               onClick={() => setMenuOpen(false)}
               className="dark-glass-button block rounded-full px-4 py-3 text-center text-sm font-medium"
             >
               Log in
             </Link>
             <Link
-              href="/early-access"
+              href="/signup"
               onClick={() => setMenuOpen(false)}
               className="dark-glass-button block rounded-full px-4 py-3 text-center text-sm font-medium"
             >

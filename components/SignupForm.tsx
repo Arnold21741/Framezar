@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCurrency } from '@/hooks/useCurrency';
 import { displayPrice, basePrices, planDetails, trialConfig } from '@/lib/pricing';
 import type { PricingPlanId } from '@/lib/pricing';
@@ -31,18 +32,45 @@ const plans = [
   }
 ];
 
-export default function SignupForm() {
+export default function SignupForm({ authReady }: { authReady: boolean }) {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
   const [chosenPlan, setChosenPlan] = useState(plans[1].id);
-  const [submitted, setSubmitted] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [status, setStatus] = useState<{ type: 'idle' | 'success' | 'error'; message: string }>({ type: 'idle', message: '' });
   const { currency, loading } = useCurrency();
 
   const selectedPlan = plans.find((plan) => plan.id === chosenPlan) ?? plans[0];
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+    setLoadingSubmit(true);
+    setStatus({ type: 'idle', message: '' });
+
+    const response = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name, password, chosenPlan })
+    });
+
+    const payload = await response.json();
+    setLoadingSubmit(false);
+
+    if (!response.ok) {
+      setStatus({ type: 'error', message: payload.error ?? 'Unable to create account.' });
+      return;
+    }
+
+    if (payload.requiresEmailConfirmation) {
+      setStatus({ type: 'success', message: 'Account created. Check your email to confirm your login before opening the dashboard.' });
+      return;
+    }
+
+    setStatus({ type: 'success', message: 'Account created. Opening your dashboard...' });
+    router.push('/dashboard');
+    router.refresh();
   };
 
   return (
@@ -54,14 +82,24 @@ export default function SignupForm() {
           <p className="text-slate-600">Choose your storage tier and create client delivery links from your account dashboard.</p>
         </div>
 
+        {!authReady ? (
+          <div className="rounded-[28px] border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
+            Add your Supabase URL and anon key to <span className="font-semibold">.env.local</span> to enable live account creation.
+          </div>
+        ) : null}
+
         <div className="grid gap-6 lg:grid-cols-2">
           <label className="space-y-2 text-sm font-medium text-slate-900">
             Full name
-            <input value={name} onChange={(event) => setName(event.target.value)} className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" placeholder="Lena Reed" />
+            <input value={name} onChange={(event) => setName(event.target.value)} className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" placeholder="Lena Reed" required />
           </label>
           <label className="space-y-2 text-sm font-medium text-slate-900">
             Email address
-            <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" placeholder="you@studio.com" />
+            <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" placeholder="you@studio.com" required />
+          </label>
+          <label className="space-y-2 text-sm font-medium text-slate-900">
+            Password
+            <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" placeholder="At least 8 characters" minLength={8} required />
           </label>
         </div>
 
@@ -105,14 +143,14 @@ export default function SignupForm() {
           <p className="mt-4 text-sm text-slate-600">Selected plan: <span className="font-semibold text-slate-950">{selectedPlan.name}</span> / {selectedPlan.storage}</p>
         </div>
 
-        <button type="submit" className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-3 text-base font-semibold text-white transition hover:bg-blue-600">
-          Create account
+        <button type="submit" disabled={!authReady || loadingSubmit} className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-3 text-base font-semibold text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
+          {loadingSubmit ? 'Creating account...' : 'Create account'}
         </button>
 
-        {submitted ? (
-          <div className="rounded-[32px] border border-emerald-200 bg-emerald-50 p-5 text-sm text-emerald-800">
-            <p className="font-semibold">Account created.</p>
-            <p className="mt-2">This is a demo signup flow. Your account dashboard will appear after signup in a future integration.</p>
+        {status.message ? (
+          <div className={`rounded-[32px] border p-5 text-sm ${status.type === 'error' ? 'border-red-200 bg-red-50 text-red-800' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`}>
+            <p className="font-semibold">{status.type === 'error' ? 'Signup needs attention.' : 'Account update'}</p>
+            <p className="mt-2">{status.message}</p>
           </div>
         ) : null}
       </form>

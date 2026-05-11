@@ -1,4 +1,5 @@
 import SignupForm from '@/components/SignupForm';
+import { isSupabaseConfigured } from '@/lib/supabase-config';
 
 export default function SignupPage() {
   return (
@@ -9,7 +10,7 @@ export default function SignupPage() {
           <h1 className="mt-4 text-4xl font-semibold text-slate-950">Build your Framezar account and start delivering albums.</h1>
           <p className="mt-4 text-slate-600">Start with a free 14-day trial with 2 GB of storage, or choose a paid plan. Create private delivery links and keep your galleries organized in one premium dashboard.</p>
         </div>
-        <SignupForm />
+        <SignupForm authReady={isSupabaseConfigured} />
       </div>
     </section>
   );
