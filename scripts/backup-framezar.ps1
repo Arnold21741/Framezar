@@ -8,8 +8,10 @@ $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $backupName = "Framezar.com-$timestamp"
 $backupRoot = Join-Path $DestinationRoot "Framezar.com"
+$logRoot = Join-Path $backupRoot "logs"
 $backupFolder = Join-Path $backupRoot $backupName
 $zipPath = Join-Path $backupRoot "$backupName.zip"
+$logPath = Join-Path $logRoot "daily-backup.log"
 $stagingRoot = Join-Path $env:TEMP "FramezarBackup-$timestamp"
 $stagingFolder = Join-Path $stagingRoot $backupName
 $stagingZip = Join-Path $stagingRoot "$backupName.zip"
@@ -32,6 +34,10 @@ if (-not (Test-Path $DestinationRoot)) {
 
 if (-not (Test-Path $backupRoot)) {
   New-Item -ItemType Directory -Path $backupRoot | Out-Null
+}
+
+if (-not (Test-Path $logRoot)) {
+  New-Item -ItemType Directory -Path $logRoot | Out-Null
 }
 
 New-Item -ItemType Directory -Path $stagingFolder | Out-Null
@@ -57,5 +63,9 @@ Copy-Item -LiteralPath $stagingFolder -Destination $backupRoot -Recurse -Force
 Copy-Item -LiteralPath $stagingZip -Destination $zipPath -Force
 Remove-Item -LiteralPath $stagingRoot -Recurse -Force
 
+$message = "$(Get-Date -Format "yyyy-MM-dd HH:mm:ss") Backup created: $backupFolder | $zipPath"
+Add-Content -LiteralPath $logPath -Value $message
+
 Write-Host "Backup folder: $backupFolder"
 Write-Host "Backup zip: $zipPath"
+Write-Host "Backup log: $logPath"
