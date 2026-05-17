@@ -52,6 +52,8 @@ export default function GalleryPublicView({ gallery }: { gallery: DemoGallery })
                 <div className="mt-6 flex flex-wrap gap-3 text-sm text-slate-600">
                   <span className="rounded-full bg-slate-100 px-3 py-1">{gallery.clientName}</span>
                   <span className="rounded-full bg-slate-100 px-3 py-1">{gallery.eventDate}</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1">{gallery.venue}</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1">{gallery.galleryType}</span>
                   <span className="rounded-full bg-slate-100 px-3 py-1">
                     {gallery.passwordProtected ? 'Password protected' : 'Open access'}
                   </span>

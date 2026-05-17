@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react';
 import GalleryCoverPreview from '@/components/GalleryCoverPreview';
 import { coverDesigns, type CoverDesignId } from '@/lib/cover-designs';
 
@@ -13,11 +13,45 @@ const sampleImages = [
   'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=1200&q=80'
 ];
 
+const monthOptions = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
+
+const categoryOptions = ['Wedding', 'Engagement', 'Family', 'Portrait', 'Branding', 'Event', 'Studio'];
+
+const getEventParts = (dateValue: string) => {
+  const [year, month] = dateValue.split('-');
+  const monthIndex = Number(month) - 1;
+
+  return {
+    year: year || new Date().getFullYear().toString(),
+    month: monthOptions[monthIndex] ?? monthOptions[new Date().getMonth()]
+  };
+};
+
 export default function CreateGalleryForm() {
   const [title, setTitle] = useState('Midsummer Dreams');
   const [clientName, setClientName] = useState('Ava Laurent');
   const [eventDate, setEventDate] = useState('2025-06-09');
   const [description, setDescription] = useState('A soft documentary collection with editorial lighting and cinematic portraiture.');
+  const initialEventParts = getEventParts('2025-06-09');
+  const [tagYear, setTagYear] = useState(initialEventParts.year);
+  const [tagMonth, setTagMonth] = useState(initialEventParts.month);
+  const [venue, setVenue] = useState('Lourensford Wine Estate');
+  const [galleryCategory, setGalleryCategory] = useState('Wedding');
+  const [customTagInput, setCustomTagInput] = useState('');
+  const [customTags, setCustomTags] = useState(['golden hour', 'outdoor ceremony']);
   const [passwordProtected, setPasswordProtected] = useState(true);
   const [heroImage, setHeroImage] = useState(sampleHero);
   const [galleryImages, setGalleryImages] = useState(sampleImages);
@@ -25,6 +59,12 @@ export default function CreateGalleryForm() {
   const objectUrlsRef = useRef<string[]>([]);
 
   const heroPreview = useMemo(() => heroImage, [heroImage]);
+  const galleryTags = useMemo(() => {
+    const fixedTags = [tagYear, tagMonth, venue, galleryCategory].map((tag) => tag.trim()).filter(Boolean);
+    return [...fixedTags, ...customTags].filter((tag, index, tags) => (
+      tags.findIndex((currentTag) => currentTag.toLowerCase() === tag.toLowerCase()) === index
+    ));
+  }, [customTags, galleryCategory, tagMonth, tagYear, venue]);
 
   useEffect(() => {
     return () => {
@@ -41,6 +81,13 @@ export default function CreateGalleryForm() {
     // TODO: Upload hero image to Cloudflare R2 and persist the storage URL here.
   };
 
+  const handleEventDateChange = (value: string) => {
+    setEventDate(value);
+    const eventParts = getEventParts(value);
+    setTagYear(eventParts.year);
+    setTagMonth(eventParts.month);
+  };
+
   const handleImagesUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     if (!files.length) return;
@@ -48,6 +95,29 @@ export default function CreateGalleryForm() {
     objectUrlsRef.current.push(...urls);
     setGalleryImages((current) => [...urls, ...current].slice(0, 12));
     // TODO: Upload gallery images to Cloudflare R2 and attach the returned URLs to gallery metadata.
+  };
+
+  const addCustomTag = () => {
+    const nextTag = customTagInput.trim();
+    if (!nextTag) return;
+    if (galleryTags.some((tag) => tag.toLowerCase() === nextTag.toLowerCase())) {
+      setCustomTagInput('');
+      return;
+    }
+
+    setCustomTags((current) => [...current, nextTag]);
+    setCustomTagInput('');
+  };
+
+  const handleCustomTagKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      addCustomTag();
+    }
+  };
+
+  const removeCustomTag = (tagToRemove: string) => {
+    setCustomTags((current) => current.filter((tag) => tag !== tagToRemove));
   };
 
   return (
@@ -67,7 +137,7 @@ export default function CreateGalleryForm() {
         <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-4">
             <label className="block text-sm font-medium text-slate-800">Event date</label>
-            <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" />
+            <input type="date" value={eventDate} onChange={(e) => handleEventDateChange(e.target.value)} className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" />
           </div>
           <div className="flex items-end justify-between rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4">
             <label className="flex items-center gap-3 text-sm text-slate-800">
@@ -81,6 +151,72 @@ export default function CreateGalleryForm() {
         <div className="space-y-4">
           <label className="block text-sm font-medium text-slate-800">Description</label>
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" />
+        </div>
+
+        <div className="rounded-[32px] border border-slate-200 bg-slate-50 p-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.35em] text-brand">Gallery tags</p>
+              <h2 className="mt-3 text-2xl font-semibold text-slate-950">Organize the gallery for search and filtering</h2>
+            </div>
+            <span className="rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-500 shadow-sm">Creator options</span>
+          </div>
+
+          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            <label className="space-y-2 text-sm font-medium text-slate-800">
+              Year
+              <input value={tagYear} onChange={(event) => setTagYear(event.target.value)} className="w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" placeholder="2026" />
+            </label>
+            <label className="space-y-2 text-sm font-medium text-slate-800">
+              Month
+              <select value={tagMonth} onChange={(event) => setTagMonth(event.target.value)} className="w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+                {monthOptions.map((month) => (
+                  <option key={month} value={month}>{month}</option>
+                ))}
+              </select>
+            </label>
+            <label className="space-y-2 text-sm font-medium text-slate-800">
+              Venue
+              <input value={venue} onChange={(event) => setVenue(event.target.value)} className="w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" placeholder="Venue or location" />
+            </label>
+            <label className="space-y-2 text-sm font-medium text-slate-800">
+              Gallery type
+              <select value={galleryCategory} onChange={(event) => setGalleryCategory(event.target.value)} className="w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+                {categoryOptions.map((category) => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+            <label className="space-y-2 text-sm font-medium text-slate-800">
+              Custom tags
+              <input value={customTagInput} onChange={(event) => setCustomTagInput(event.target.value)} onKeyDown={handleCustomTagKeyDown} className="w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-900 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" placeholder="Add style, season, package, or client keyword" />
+            </label>
+            <button type="button" onClick={addCustomTag} className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-800 transition hover:border-brand hover:text-brand">
+              Add tag
+            </button>
+          </div>
+
+          <div className="mt-6">
+            <p className="text-sm font-semibold text-slate-950">Tag preview</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {galleryTags.map((tag) => {
+                const removable = customTags.includes(tag);
+                return (
+                  <span key={tag} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">
+                    {tag}
+                    {removable ? (
+                      <button type="button" onClick={() => removeCustomTag(tag)} className="text-slate-400 transition hover:text-red-500" aria-label={`Remove ${tag} tag`}>
+                        x
+                      </button>
+                    ) : null}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
@@ -208,9 +344,10 @@ export default function CreateGalleryForm() {
         </div>
 
         <div className="rounded-[32px] border border-slate-200 bg-slate-50 p-6 text-slate-700">
-          <p className="font-medium text-slate-950">Gallery setup</p>
+            <p className="font-medium text-slate-950">Gallery setup</p>
           <ul className="mt-4 space-y-2 text-sm leading-6">
             <li>Choose the cover image clients see before opening the gallery.</li>
+            <li>Add tags such as year, month, venue, type, and custom keywords for future search and filtering.</li>
             <li>Pick a cover design that matches the tone of the session.</li>
             <li>Review the desktop and mobile previews before sharing the link.</li>
           </ul>

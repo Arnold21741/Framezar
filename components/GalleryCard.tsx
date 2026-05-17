@@ -31,6 +31,13 @@ export default function GalleryCard({ gallery }: { gallery: DemoGallery }) {
           <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">{gallery.imageCount} images</span>
         </div>
         <p className="text-sm leading-6 text-slate-600">{gallery.description}</p>
+        <div className="flex flex-wrap gap-2">
+          {gallery.tags.slice(0, 5).map((tag) => (
+            <span key={tag} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+              {tag}
+            </span>
+          ))}
+        </div>
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/70 pt-4 text-sm text-slate-600">
           <span>{gallery.clientName}</span>
           <span>{gallery.createdAt}</span>

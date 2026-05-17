@@ -13,6 +13,9 @@ export type DemoGallery = {
   clientName: string;
   eventDate: string;
   description: string;
+  tags: string[];
+  venue: string;
+  galleryType: string;
   heroImage: string;
   coverImage: string;
   createdAt: string;
@@ -28,6 +31,9 @@ export const galleries: DemoGallery[] = [
     clientName: 'Ava Laurent',
     eventDate: 'June 9, 2025',
     description: 'A soft documentary collection with editorial lighting, intimate details, and cinematic portraiture.',
+    tags: ['2025', 'June', 'Lourensford Wine Estate', 'Wedding', 'golden hour', 'outdoor ceremony'],
+    venue: 'Lourensford Wine Estate',
+    galleryType: 'Wedding',
     heroImage: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
     coverImage: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80',
     createdAt: 'Apr 25, 2025',
@@ -82,6 +88,9 @@ export const galleries: DemoGallery[] = [
     clientName: 'Mila & Co.',
     eventDate: 'March 16, 2025',
     description: 'Minimal editorial portraits and clean studio lighting for an elevated brand story.',
+    tags: ['2025', 'March', 'Studio 44', 'Branding', 'editorial', 'minimal studio'],
+    venue: 'Studio 44',
+    galleryType: 'Branding',
     heroImage: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1600&q=80',
     coverImage: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80',
     createdAt: 'Mar 16, 2025',

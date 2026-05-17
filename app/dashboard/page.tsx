@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { galleries, demoAccount } from '@/lib/demo-data';
-import GalleryCard from '@/components/GalleryCard';
+import SearchableGalleryGrid from '@/components/SearchableGalleryGrid';
 import LogoutButton from '@/components/LogoutButton';
 import { getCurrentUser } from '@/lib/auth-server';
 
@@ -43,11 +43,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        {galleries.map((gallery) => (
-          <GalleryCard key={gallery.id} gallery={gallery} />
-        ))}
-      </div>
+      <SearchableGalleryGrid galleries={galleries} />
     </section>
   );
 }

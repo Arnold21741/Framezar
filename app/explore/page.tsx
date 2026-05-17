@@ -1,5 +1,6 @@
 import GalleryCard from '@/components/GalleryCard';
 import DeliveryCard from '@/components/DeliveryCard';
+import SearchableGalleryGrid from '@/components/SearchableGalleryGrid';
 import { galleries, demoAccount } from '@/lib/demo-data';
 import Link from 'next/link';
 
@@ -168,11 +169,7 @@ export default function ExplorePage() {
             </Link>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-3">
-            {galleries.slice(0, 3).map((gallery) => (
-              <GalleryCard key={gallery.id} gallery={gallery} />
-            ))}
-          </div>
+          <SearchableGalleryGrid galleries={galleries.slice(0, 3)} compact />
         </div>
       </div>
     </section>
